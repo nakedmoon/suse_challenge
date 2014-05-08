@@ -24,6 +24,7 @@ describe MutantsController do
   # Mutant. As you add validations to Mutant, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) { { "name" => "MyString", "country" => "Italy" } }
+  let(:valid_team_attributes) { { "name" => 'team', "description" => "description" } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -32,9 +33,18 @@ describe MutantsController do
 
   describe "GET index" do
     it "assigns all mutants as @mutants" do
-      mutant = Mutant.create! valid_attributes
+      team_1 = Team.create! valid_team_attributes
+      team_2 = Team.create! valid_team_attributes
+      team_3 = Team.create! valid_team_attributes
+      mutant_1 = Mutant.create! valid_attributes.merge({"team" => team_1})
+      mutant_2 = Mutant.create! valid_attributes.merge({"team" => team_2})
+      mutant_3 = Mutant.create! valid_attributes.merge({"team" => team_3})
+      # Get index without team_id
       get :index, {}, valid_session
-      assigns(:mutants).should eq([mutant])
+      assigns(:mutants).should eq([mutant_1, mutant_2, mutant_3])
+      # Get index with team_id
+      get :index, {:team_id => team_1.id}, valid_session
+      assigns(:mutants).should eq([mutant_1])
     end
   end
 
