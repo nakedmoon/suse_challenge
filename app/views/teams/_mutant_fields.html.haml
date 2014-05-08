@@ -1,0 +1,4 @@
+.nested-fields.form-inline
+  =f.input_field :name,  {placeholder: 'mutant name', :class => 'form-control'}
+  =f.input_field :country, :as => :country, include_blank: false, :class => 'form-control'
+  =link_to_remove_association "x", f, :class => 'btn btn-danger'

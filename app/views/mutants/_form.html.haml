@@ -1,0 +1,5 @@
+= simple_form_for @mutant, :html => { :class => 'form-horizontal' } do |f|
+  = f.input :name
+  = f.input :country, :as => :country
+  = f.button :submit, :class => 'btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), mutants_path, :class => 'btn btn-default'

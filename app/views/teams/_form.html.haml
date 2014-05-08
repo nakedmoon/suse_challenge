@@ -1,0 +1,22 @@
+= simple_form_for @team, :html => { :class => 'form-horizontal' } do |f|
+  = f.input :name
+  = f.input :description
+  %hr
+  #tasks
+    %h4
+      Tasks
+    = f.simple_fields_for :tasks do |task|
+      = render 'task_fields', :f => task
+    .links
+      = link_to_add_association 'add task', f, :tasks, :class => 'btn blue btn-default'
+  %hr
+  #mutants
+    %h4
+      Mutants
+    = f.simple_fields_for :mutants do |task|
+      = render 'mutant_fields', :f => task
+    .links
+      = link_to_add_association 'add mutant', f, :mutants, :class => 'btn blue btn-default'
+  %hr
+  = f.button :submit, :class => 'btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), teams_path, :class => 'btn btn-default'
