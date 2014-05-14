@@ -52,6 +52,5 @@ gem 'country_select'
 group :development, :test do
   gem "fabrication"
   gem "rspec-rails"
+  gem 'debugger'
 end
-
-

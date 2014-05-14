@@ -24,6 +24,21 @@ describe TeamsController do
   # Team. As you add validations to Team, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) { { "name" => "MyTeam Name",   "description" => "MyTeam Description" } }
+  let(:mutants_attributes) { { 'mutants_attributes' => {
+    '0' => {
+      'name' => 'Wolverine',
+      'country' => 'Germany',
+      '_destroy' => 'false'
+    }
+  } } }
+
+  let(:tasks_attributes) { { 'tasks_attributes' => {
+    '0' => {
+      'name' => 'World Domination',
+      'status' => 'active',
+      '_destroy' => 'false'
+    }
+  } } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -79,6 +94,12 @@ describe TeamsController do
         post :create, {:team => valid_attributes}, valid_session
         response.should redirect_to(Team.last)
       end
+
+      it "allows to create associated mutants" do
+        valid_attributes.merge!(mutants_attributes)
+        post :create, {:team => valid_attributes}, valid_session
+        response.should redirect_to(Team.last)
+      end
     end
 
     describe "with invalid params" do
@@ -121,6 +142,29 @@ describe TeamsController do
         put :update, {:id => team.to_param, :team => valid_attributes}, valid_session
         response.should redirect_to(team)
       end
+
+      it "allows to update associated mutants" do
+        valid_attributes.merge!(mutants_attributes)
+        team = Team.create! valid_attributes
+        # Ensure we re-use an existing mutant.
+        valid_attributes["mutants_attributes"]["0"]["id"] = Mutant.last.id
+        put :update, {:id => team.to_param, :team => valid_attributes}, valid_session
+        response.should redirect_to(team)
+        # Ensure we don't duplicate the associated mutants.
+        expect(team.mutants.count).to eq(1)
+      end
+
+      it "allows to update associated tasks" do
+        valid_attributes.merge!(tasks_attributes)
+        team = Team.create! valid_attributes
+        # Ensure we re-use an existing task.
+        valid_attributes["tasks_attributes"]["0"]["id"] = Task.last.id
+        put :update, {:id => team.to_param, :team => valid_attributes}, valid_session
+        response.should redirect_to(team)
+        # Ensure we don't duplicate the associated tasks.
+        expect(team.tasks.count).to eq(1)
+      end
+
     end
 
     describe "with invalid params" do
