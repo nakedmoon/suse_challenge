@@ -79,6 +79,20 @@ describe TeamsController do
         post :create, {:team => valid_attributes}, valid_session
         response.should redirect_to(Team.last)
       end
+
+      it "allows to create associated mutants" do
+        valid_attributes.merge!(
+          'mutants_attributes' => {
+            '0' => {
+              'name' => 'Wolverine',
+              'country' => 'Germany',
+              '_destroy' => 'false'
+            }
+          }
+        )
+        post :create, {:team => valid_attributes}, valid_session
+        response.should redirect_to(Team.last)
+      end
     end
 
     describe "with invalid params" do
